@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+ checkAuth,
  signin,
  signout,
  signup,
@@ -11,8 +12,8 @@ const router = Router();
 
 router.post("/signup", validateSignUp, signup);
 router.post("/signin", signin);
-router.post("/signout", signout);
+router.get("/signout", signout);
 
-router.get("/check");
+router.get("/check", protectRoute, checkAuth);
 
 export default router;

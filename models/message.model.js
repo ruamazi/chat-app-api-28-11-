@@ -1,25 +1,25 @@
 import { Schema, model } from "mongoose";
 
 const messageSchema = new Schema(
-  {
-    senderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    receiverId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    text: {
-      type: String,
-    },
-    image: {
-      type: String,
-    },
+ {
+  senderId: {
+   type: Schema.Types.ObjectId,
+   ref: "User",
+   required: true,
   },
-  { timestamps: true }
+  receiverId: {
+   type: Schema.Types.ObjectId,
+   ref: "User",
+   required: true,
+  },
+  text: {
+   type: String,
+  },
+  image: {
+   type: String,
+  },
+ },
+ { timestamps: true }
 );
 
 const Message = model("Message", messageSchema);

@@ -6,14 +6,13 @@ import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import usereRoutes from "./routes/user.route.js";
+import { app, server } from "./lib/socket.js";
 
-const app = express();
-
-app.use(express.json());
+app.use(express.json({ limit: "3mb" }));
 app.use(cookieParser());
 app.use(
  cors({
-  origin: "http://localhost:5173",
+  origin: process.env.CLIENT_URL,
   credentials: true,
  })
 );
@@ -27,7 +26,7 @@ app.get("/api", (req, res) => {
 });
 
 const port = process.env.PORT || 3033;
-app.listen(port, async () => {
+server.listen(port, async () => {
  await connectDB();
  console.log(`Server running on port: ${port}`);
 });
