@@ -28,18 +28,20 @@ export const sendMessage = async (req, res) => {
  const senderId = req.user._id;
  const receiverId = req.params.id;
  // Decode the base64 profilePic to a buffer
- const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
- const imgBuffer = Buffer.from(base64Data, "base64");
- const maxSize = 7 * 1024 * 1024; // 7MB in bytes
- if (imgBuffer.length > maxSize) {
-  return res.status(400).json({ error: "File size exceeds 5MB limit" });
- }
- //check file type
- const type = await fileTypeFromBuffer(imgBuffer);
- if (!type || !["image/jpeg", "image/jpg", "image/png"].includes(type.mime)) {
-  return res
-   .status(400)
-   .json({ error: "Only JPEG, JPG or PNG images are allowed" });
+ if (image) {
+  const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
+  const imgBuffer = Buffer.from(base64Data, "base64");
+  const maxSize = 7 * 1024 * 1024; // 7MB in bytes
+  if (imgBuffer.length > maxSize) {
+   return res.status(400).json({ error: "File size exceeds 5MB limit" });
+  }
+  //check file type
+  const type = await fileTypeFromBuffer(imgBuffer);
+  if (!type || !["image/jpeg", "image/jpg", "image/png"].includes(type.mime)) {
+   return res
+    .status(400)
+    .json({ error: "Only JPEG, JPG or PNG images are allowed" });
+  }
  }
  let imageUrl;
  try {

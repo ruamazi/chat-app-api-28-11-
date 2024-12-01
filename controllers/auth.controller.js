@@ -26,6 +26,12 @@ export const signup = async (req, res) => {
   if (!username || !email || !password) {
    return res.status(400).json({ message: "All fields are required" });
   }
+  const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+  if (!alphanumericRegex.test(username)) {
+   return res
+    .status(400)
+    .json({ error: "Only letters and numbers allowed to use in username" });
+  }
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -38,16 +44,16 @@ export const signup = async (req, res) => {
     error: "You are already registred with this email, please sign in",
    });
   }
-  const isUsernameExists = await User.findOne({ username });
+  const normalizedUsername = username.toLowerCase();
+  const isUsernameExists = await User.findOne({ normalizedUsername });
   if (isUsernameExists) {
    return res.status(400).json({
     error: "username has already been taken",
    });
   }
-
   const hashedPsw = await hashPsw(password);
   const newUser = new User({
-   username,
+   username: normalizedUsername,
    email,
    password: hashedPsw,
   });
