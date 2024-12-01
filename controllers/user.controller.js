@@ -32,9 +32,9 @@ export const updatePic = async (req, res) => {
   // Decode the base64 profilePic to a buffer
   const base64Data = profilePic.replace(/^data:image\/\w+;base64,/, "");
   const imgBuffer = Buffer.from(base64Data, "base64");
-  const maxSize = 1 * 1024 * 1024; // 2MB in bytes
+  const maxSize = 5 * 1024 * 1024; // 5MB in bytes
   if (imgBuffer.length > maxSize) {
-   return res.status(400).json({ error: "File size exceeds 1MB limit" });
+   return res.status(400).json({ error: "File size exceeds 5MB limit" });
   }
   const type = await fileTypeFromBuffer(imgBuffer);
   if (!type || !["image/jpeg", "image/jpg", "image/png"].includes(type.mime)) {
@@ -42,11 +42,17 @@ export const updatePic = async (req, res) => {
     .status(400)
     .json({ error: "Only JPEG, JPG or PNG images are allowed" });
   }
+
   if (user.profilePic) {
    const publicId = user.profilePic.split("/").pop().split(".")[0];
    await cloudinary.uploader.destroy(publicId);
   }
-  const uploadResp = await cloudinary.uploader.upload(profilePic);
+  const uploadResp = await cloudinary.uploader.upload(profilePic, {
+   resource_type: "image",
+   use_filename: false,
+   unique_filename: true,
+   transformation: [{ width: 128, crop: "scale" }],
+  });
   const updateUser = await User.findByIdAndUpdate(
    userId,
    { profilePic: uploadResp.secure_url },

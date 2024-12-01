@@ -8,7 +8,7 @@ import messageRoutes from "./routes/message.route.js";
 import usereRoutes from "./routes/user.route.js";
 import { app, server } from "./lib/socket.js";
 
-app.use(express.json({ limit: "3mb" }));
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(
  cors({
